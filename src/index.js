@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-// import { fetchImages } from "./fetchImages";
-
 
 import debounce from 'lodash.debounce';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
