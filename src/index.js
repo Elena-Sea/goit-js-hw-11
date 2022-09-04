@@ -14,15 +14,15 @@ const DEBOUNCE_DELAY = 300;
 refs.form.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
 
 
-let imageName;
+let inputName;
 
 refs.form.addEventListener('submit', onFormSubmit);
 
 function onFormInput() { 
 
-    imageName = refs.input.value;
-    console.log(imageName);
-    if (imageName === '') { 
+    inputName = refs.input.value;
+    console.log(inputName);
+    if (inputName === '') { 
         resetMarkup();
         return;
     }
