@@ -28,7 +28,7 @@ function fetchImages(imageType) {
 
     return axios.get((`/?key=29710513-88fdd381238e9ed6d5c0ddb9e&q=${imageType}&image_type=photo&orientation=horizontal&safesearch=true`)).then(response => response.data)
 }
-
+let images = [];
 function searchImage(e) { 
     e.preventDefault();
 
@@ -36,7 +36,30 @@ function searchImage(e) {
     //     resetMarkup();
     //     return;
     // };
-    fetchImages(imageType).then(image => console.log(image)).catch((error) => console.log(error));
+    fetchImages(imageType).then(image => { return images = image.hits }).then(renderGallery).catch((error) => console.log(error));
+}
+
+function renderGallery() { 
+    gallery.innerHTML = images.map(image => { 
+        return `<div class="photo-card">
+                <img src="" alt="" loading="lazy" />
+                <div class="info">
+                    <p class="info-item">
+                    <b>Likes</b>
+                    </p>
+                    <p class="info-item">
+                    <b>Views</b>
+                    </p>
+                    <p class="info-item">
+                    <b>Comments</b>
+                    </p>
+                    <p class="info-item">
+                    <b>Downloads</b>
+                    </p>
+                </div>
+                </div>`
+    }).join('');
+
 }
 
 
