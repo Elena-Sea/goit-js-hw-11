@@ -1,43 +1,105 @@
+import axios from 'axios';
+
+// import { fetchImages } from "./fetchImages";
+
 
 import debounce from 'lodash.debounce';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import 'notiflix/dist/notiflix-3.2.5.min.css';
 
-
-const refs = {
-    form: document.querySelector('form#search-form'),
-    input: document.querySelector('input'),
-    gallery: document.querySelector('.gallery'),
-};
-
-console.log(refs.gallery);
 const DEBOUNCE_DELAY = 300;
 
-refs.form.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
+const input = document.querySelector('input');
+const form = document.querySelector('form#search-form');
+const gallery = document.querySelector('.gallery');
 
 
-let inputName;
+form.addEventListener('submit', searchImage);
 
-refs.form.addEventListener('submit', onFormSubmit);
+let imageType = '';
+input.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
 
-function onFormInput() { 
-
-    inputName = refs.input.value;
-    console.log(inputName);
-    if (inputName === '') { 
-        resetMarkup();
-        return;
-    }
-    // fetchImages(imageName).then(renderGallery).catch(error => {
-    //     Notify.failure("Oops, there is no image with that name");
-    // }); 
+function onFormInput(e) { 
+    imageType = e.target.value.trim();
 }
 
-function onFormSubmit(e) { 
+axios.defaults.baseURL = 'https://pixabay.com/api';
+
+function fetchImages(imageType) { 
+    console.log(imageType);
+
+    return axios.get((`/?key=29710513-88fdd381238e9ed6d5c0ddb9e&q=${imageType}&image_type=photo&orientation=horizontal&safesearch=true`)).then(response => response.data)
+}
+
+function searchImage(e) { 
     e.preventDefault();
-    if (!refs.input.value) { 
-            return alert('Please fill in all fields!');
-        }
+
+    // if (imageType === '') { 
+    //     resetMarkup();
+    //     return;
+    // };
+    fetchImages(imageType).then(image => console.log(image)).catch((error) => console.log(error));
 }
 
-function resetMarkup() { 
-    gallery.innerHTML = '';
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const refs = {
+//     form: document.querySelector('form#search-form'),
+//     input: document.querySelector('input'),
+//     gallery: document.querySelector('.gallery'),
+// };
+
+// console.log(refs.gallery);
+// const DEBOUNCE_DELAY = 300;
+
+// refs.form.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
+
+
+// // let inputName;
+
+// refs.form.addEventListener('submit', onFormSubmit);
+
+// function onFormInput(e) { 
+
+//     const inputName = e.target.value.trim();
+//     console.log(inputName);
+//     // if (inputName === '') { 
+//     //     resetMarkup();
+//     //     return;
+//     // }
+//     fetchImages(inputName).catch(error => {
+//         console.log(error.message);
+//     }); 
+// }
+
+// function onFormSubmit(e) { 
+//     e.preventDefault();
+//     if (!refs.input.value) { 
+//             return alert('Please fill in all fields!');
+//         }
+// }
+
+// function resetMarkup() { 
+//     gallery.innerHTML = '';
+// }
