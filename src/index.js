@@ -10,18 +10,23 @@ const DEBOUNCE_DELAY = 300;
 const input = document.querySelector('input');
 const form = document.querySelector('form#search-form');
 const gallery = document.querySelector('.gallery');
+const loadBtn = document.querySelector('.load-more');
+
 
 let imageType = '';
 let images = [];
+let page = 1;
 
-form.addEventListener('submit', searchImage);
+form.addEventListener('submit', showImages);
 input.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
+loadBtn.addEventListener('click', onLoadMore);
+
 
 axios.defaults.baseURL = 'https://pixabay.com/api';
 function fetchImages(imageType) { 
     console.log(imageType);
 
-    return axios.get((`/?key=29710513-88fdd381238e9ed6d5c0ddb9e&q=${imageType}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`)).then(response => response.data)
+    return axios.get((`/?key=29710513-88fdd381238e9ed6d5c0ddb9e&q=${imageType}&image_type=photo&orientation=horizontal&safesearch=true&per_page=4&page=${page}`)).then(response => response.data)
 }
 
 function onFormInput(e) { 
@@ -32,14 +37,14 @@ function onFormInput(e) {
     };
 }
 
-function searchImage(e) { 
+function showImages(e) { 
     e.preventDefault();
     if (imageType === '') { 
         Notify.info("Please, fill in the field");
         resetMarkup();
         return;
     };
-    fetchImages(imageType).then(image => { return images = image.hits }).then(renderGallery).catch((error) => console.log(error));
+    fetchImages(imageType).then(image => { return images = image.hits }).then(page += 1).then(renderGallery).catch((error) => console.log(error));
 }
 
 function renderGallery() { 
@@ -55,7 +60,7 @@ function renderGallery() {
 }
 
 function markupGallery() { 
-    gallery.innerHTML = images.map(image => { 
+    gallery.insertAdjacentHTML('beforeend', images.map(image => { 
         return `<div class="photo-card">
                 <div class="photo-card__image-container">
                     <img class="photo-card__image" src="${image.largeImageURL}" alt="${image.tags}" loading="lazy" width="500"/>
@@ -75,9 +80,26 @@ function markupGallery() {
                     </p>
                 </div>
                 </div>`
-    }).join('');
+    }).join('')
+    );
 }
 
 function resetMarkup() { 
     gallery.innerHTML = '';
 }
+
+
+function onLoadMore() { 
+    // return page += 1;
+    console.log('load more');
+    fetchImages(imageType).then(image => { return images = images.hits }).then(page += 1).then(markupGallery()).catch((error) => console.log(error));
+}
+
+// function appendGalleryMarkup(images) { 
+//     gallery.insertAdjacentHTML('beforeend', markupGallery(images));
+// }
+
+function resetMarkup() { 
+    gallery.innerHTML = '';
+}
+
