@@ -19,12 +19,12 @@ p {
   width: 100%;
   justify-content: space-between;
   padding: 60px;
-  background: rgb(230, 226, 226);
+  background: #f7f4f4;
 }
 
 .photo-card {
   border-bottom: 1px solid #EEEEEE;
-  background: rgb(247, 244, 244);
+  background: #f7f4f4;
   flex-basis: calc((100% - 20px * 3) / 4);
   height: 450px;
   // width: 450px;

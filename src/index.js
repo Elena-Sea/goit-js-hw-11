@@ -21,11 +21,15 @@ axios.defaults.baseURL = 'https://pixabay.com/api';
 function fetchImages(imageType) { 
     console.log(imageType);
 
-    return axios.get((`/?key=29710513-88fdd381238e9ed6d5c0ddb9e&q=${imageType}&image_type=photo&orientation=horizontal&safesearch=true`)).then(response => response.data)
+    return axios.get((`/?key=29710513-88fdd381238e9ed6d5c0ddb9e&q=${imageType}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`)).then(response => response.data)
 }
 
 function onFormInput(e) { 
     imageType = e.target.value.trim();
+    if (imageType === '') { 
+        resetMarkup();
+        Notify.info("Please, type to search...");
+    };
 }
 
 function searchImage(e) { 
@@ -46,7 +50,7 @@ function renderGallery() {
         resetMarkup();
         markupGallery(images);
     } else {
-        Notify.info("Приятного просмотра");
+        resetMarkup();
     }
 }
 
