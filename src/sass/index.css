@@ -76,4 +76,19 @@ p {
   -webkit-clip-path: inset(50%);
           clip-path: inset(50%);
   margin: -1px;
+}
+
+.load-more {
+  position: fixed;
+  right: 45%;
+  bottom: 30px;
+  display: inline-block;
+  width: 200px;
+  height: 64px;
+  margin: 0;
+  padding: 0;
+  border: solid 4px rgb(147, 147, 247);
+  border-radius: 4px;
+  background-color: rgb(178, 178, 248);
+  cursor: pointer;
 }/*# sourceMappingURL=index.css.map */

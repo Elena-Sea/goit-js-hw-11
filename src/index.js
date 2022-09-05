@@ -10,30 +10,36 @@ const DEBOUNCE_DELAY = 300;
 const input = document.querySelector('input');
 const form = document.querySelector('form#search-form');
 const gallery = document.querySelector('.gallery');
-const loadBtn = document.querySelector('.load-more');
+const loadBtn = document.querySelector('button.load-more');
+const submitBtn = document.querySelector('button[type="submit"]');
 
 
 let imageType = '';
 let images = [];
 let page = 1;
-
+console.log(page);
 form.addEventListener('submit', showImages);
 input.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
-loadBtn.addEventListener('click', onLoadMore);
+loadBtn.addEventListener('click', markupGallery);
 
 
 axios.defaults.baseURL = 'https://pixabay.com/api';
 function fetchImages(imageType) { 
     console.log(imageType);
+    console.log(page);
 
-    return axios.get((`/?key=29710513-88fdd381238e9ed6d5c0ddb9e&q=${imageType}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`)).then(response => response.data)
+    return axios.get((`/?key=29710513-88fdd381238e9ed6d5c0ddb9e&q=${imageType}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`)).then(response => response.data);
+
 }
+console.log(page);
 
 function onFormInput(e) { 
     imageType = e.target.value.trim();
     if (imageType === '') { 
         resetMarkup();
         Notify.info("Please, type to search...");
+        submitBtn.disabled = false;
+        loadBtn.classList.add('visually-hidden');
     };
 }
 
@@ -51,26 +57,14 @@ async function showImages(e) {
     onSubmit(e);
     try {
         const res = await fetchImages(imageType);
-        console.log(res);
-        // const numberFoundImages = res.totalHits;
-        // const { hits, totalHits } = response.data;
-        // console.log(response.data);
+        if (page > 1) { 
+            submitBtn.disabled = true;
+            loadBtn.classList.remove('visually-hidden');
+        }     
         const numberFoundImages = res.totalHits;
-        console.log(numberFoundImages);
         const images = res.hits;
-        console.log(images);
-        const checkup = await canRenderGallery(res);
-
-    //    if (images === 0) {
-    //     resetMarkup();
-    //     Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-    // } else if (numberFoundImages >= 1) {
-    //     Notiflix.Notify.success(`Hooray we found ${numberFoundImages} images`);
-    // } else {
-    //     resetMarkup();
-    // }
-       
-        // Load = await markupGallery();
+        canRenderGallery(res, page);
+        markupGallery(images);
     }
     catch { 
         error => console.log(error.message);
@@ -83,20 +77,19 @@ function canRenderGallery(res, page) {
     console.log(maxNumberPages);
 
     if (res.totalHits === 0) {
-        console.log(res.totalHits);
         resetMarkup();
         Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         return;
     } else if (res.totalHits > 1) {
-        console.log(res.totalHits);
         Notify.success(`Hooray we found ${res.totalHits} images`);
-        page += 1;
+    } else if (page === maxNumberPages) {
+        Notify.info("We're sorry, but you've reached the end of search results.");
     } else {
-        resetMarkup();
+        resetMarkup(images);
     }
 }
 
-function markupGallery() { 
+function markupGallery(images) { 
     gallery.insertAdjacentHTML('beforeend', images.map(image => { 
         return `<div class="photo-card">
                 <div class="photo-card__image-container">
@@ -124,20 +117,3 @@ function markupGallery() {
 function resetMarkup() { 
     gallery.innerHTML = '';
 }
-
-
-function onLoadMore() { 
-    // return page += 1;
-    console.log('load more');
-    fetchImages(imageType).then(image => { return images = images.hits }).then(page += 1).then(markupGallery()).catch((error) => console.log(error));
-}
-
-// function appendGalleryMarkup(images) { 
-//     gallery.insertAdjacentHTML('beforeend', markupGallery(images));
-// }
-
-function resetMarkup() { 
-    gallery.innerHTML = '';
-}
-
-// startTimerBtn.disabled = true;
