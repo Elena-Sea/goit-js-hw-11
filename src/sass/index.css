@@ -13,6 +13,11 @@ p {
   background-color: #004cff;
 }
 
+input {
+  width: 200px;
+  height: 30px;
+}
+
 .gallery {
   display: flex;
   flex-wrap: wrap;
