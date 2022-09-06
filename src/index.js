@@ -100,6 +100,7 @@ function resetMarkup() {
 async function notificationsInSubmit(data) { 
     if (data.totalHits === 0) {
         resetMarkup();
+        loadBtn.classList.add('visually-hidden');
         Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         return;
     } else if (data.totalHits > 1) {
